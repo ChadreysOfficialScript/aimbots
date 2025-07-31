@@ -8,8 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 
-
-local CircleRadius = 340
+local CircleRadius = 120
 local BulletSpeed = 2200
 local GRAVITY = Workspace.Gravity
 local VELOCITY_MULTIPLIER = 1.12
@@ -17,32 +16,27 @@ local GRAVITY_COMPENSATION = 1.15
 local OriginalCircleColor = Color3.fromRGB(107, 98, 155)
 local CircleVisible = false
 
-
 local AimingEnabled = false
 local RightMouseButtonHeld = false
 local PredictionX = 1
 local PredictionY = 1
 local SmoothFactor = 1
 
-
 local TargetPlayer = nil
-
 
 local Circle = Drawing.new("Circle")
 Circle.Visible = true
-Circle.Thickness = 1
+Circle.Thickness = 2
 Circle.NumSides = 50
 Circle.Radius = CircleRadius
 Circle.Filled = false
 Circle.Transparency = 0.5
 Circle.Color = OriginalCircleColor
 
-
 local DebugLine = Drawing.new("Line")
-DebugLine.Thickness = 1
+DebugLine.Thickness = 2
 DebugLine.Transparency = 0.8
 DebugLine.Visible = false
-
 
 local PlayerBox = Drawing.new("Square")
 PlayerBox.Visible = false
@@ -59,7 +53,6 @@ PlayerNameText.Font = 2
 PlayerNameText.Size = 16
 PlayerNameText.Color = Color3.new(1, 1, 1)
 
-
 local function getBulletSpeed()
 	local weapon = LocalPlayer:FindFirstChild("CurrentSelectedObject")
 	if weapon and weapon.Value then
@@ -71,7 +64,6 @@ local function getBulletSpeed()
 	end
 	return BulletSpeed
 end
-
 
 local function findNearestTargetToCenter()
 	local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
@@ -88,7 +80,6 @@ local function findNearestTargetToCenter()
 	end
 	return closest
 end
-
 
 local function aimAtTarget()
 	if not TargetPlayer or not TargetPlayer.Character then return end
@@ -109,7 +100,6 @@ local function aimAtTarget()
 	end
 end
 
-
 local function updateDebugLine()
 	if not TargetPlayer or not TargetPlayer.Character then DebugLine.Visible = false return end
 	local head = TargetPlayer.Character:FindFirstChild("ServerColliderHead")
@@ -122,7 +112,6 @@ local function updateDebugLine()
 	DebugLine.Visible = true
 	DebugLine.Color = Color3.fromHSV((tick() % 5) / 5, 1, 1)
 end
-
 
 local function updatePlayerBox(player)
 	local head = player and player.Character and player.Character:FindFirstChild("ServerColliderHead")
@@ -142,13 +131,11 @@ local function updatePlayerBox(player)
 	PlayerNameText.Visible = true
 end
 
-
 local function updateCirclePosition()
 	local screenSize = Camera.ViewportSize
 	Circle.Position = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
 	Circle.Color = CircleVisible and OriginalCircleColor or Color3.fromHSV((tick() % 5) / 5, 1, 1)
 end
-
 
 UserInputService.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton2 then
@@ -163,7 +150,6 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
-
 RunService.RenderStepped:Connect(function()
 	updateCirclePosition()
 	TargetPlayer = findNearestTargetToCenter()
@@ -171,3 +157,10 @@ RunService.RenderStepped:Connect(function()
 	aimAtTarget()
 	updatePlayerBox(TargetPlayer)
 end)
+
+local StarterGui = game:GetService("StarterGui")
+StarterGui:SetCore("SendNotification", {
+    Title = "Ch4dr3y.xyz|Aimbot Loaded",
+    Text = "Hold MouseButton2 to aim",
+    Duration = 5
+})
